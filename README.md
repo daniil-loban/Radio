@@ -1,13 +1,16 @@
-1) clone:
+requrements:
+ ffmpeg & ffprobe on server
+
+#1 clone:
 ```git clone https://github.com/daniil-loban/Radio.git```
 
-2) install modules:
+#2 install modules:
 ```yarn install```
 
-2.5) optional: add some audio files to /audio folder
+#3 optional: add some audio files to /audio folder
 
-3) run server:
+#4 run server:
 ```yarn start```
 
-4) open clint:
+#5 open clint:
 ```index.html  (just open it in browser)```
