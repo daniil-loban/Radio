@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>Radio</title>
+  </head>
+
+  <body>
+    <h1>Radio</h1>
+    <h2 id="playNow">...</h2>
+    <button class="play">Play</button>
+    <button class="stop">Stop</button>
+    <script>
+      var ws = new WebSocket("ws://localhost:8081");
+      ws.binaryType = 'arraybuffer';
+
+      const play = document.querySelector('.play');
+      const stop = document.querySelector('.stop');
+      const playNow = document.querySelector('#playNow');
+
+      let audioCtx = null;
+
+      if(window.webkitAudioContext) {
+        audioCtx = new window.webkitAudioContext();
+      } else {
+        audioCtx = new window.AudioContext();
+      }
+
+      function init() {
+        try {
+          context = new AudioContext();
+        } catch(e) {
+          alert('Web Audio API is not supported in this browser');
+        }
+      }
+
+      window.addEventListener('load', init, false);
+
+      let intervalId = null;
+      let timeoutId = null;
+
+      let time = audioCtx.currentTime;
+      let currentPlay = time;
+
+      const LENGTH = 10;
+      let startTime = 0;
+      let lastBuffTime = -1;
+
+      let songLength = 0;
+      let currentSource = null;
+
+      let status = 'STOP'
+      
+      const stopPlayer = () => {
+        status = 'STOP'
+        clearInterval(intervalId);
+        clearInterval(timeoutId);
+        intervalId = null;
+        if (currentSource) currentSource.stop(0);
+        play.removeAttribute('disabled');
+        stop.setAttribute('disabled', 'disabled');
+      }
+
+      const runPlayer = () => {
+        status = 'PLAY';
+        ws.send(startTime);
+        play.setAttribute('disabled', 'disabled');
+        stop.removeAttribute('disabled');
+      }
+
+      const startGetInterval = () => {
+        const timeoutId = setTimeout(() => {
+          ws.send(startTime);
+        }
+        ,1000 * (LENGTH * .7))
+      } 
+
+      ws.onmessage = function(message){ 
+        let {data: audioData} = message;
+        if (audioData instanceof ArrayBuffer && status !== 'STOP') {
+          audioCtx.decodeAudioData(audioData, function(buffer) {
+            songLength = buffer.duration;
+            currentSource = audioCtx.createBufferSource();
+            currentSource.buffer = buffer;
+            currentSource.connect(audioCtx.destination);
+            currentSource.loop = false;
+            currentPlay += songLength;
+            currentSource.start(currentPlay)
+            startTime += LENGTH;
+            startGetInterval();  
+          });
+        } else if(typeof audioData === 'string') {
+          //console.log(audioData)
+          const json = JSON.parse(audioData);
+          switch(json.type){
+            case 'error': 
+              //console.log(json.message);
+              stopPlayer();
+              break;
+            case 'info':
+              playNow.textContent = json.files[0];
+              //console.log(json.files, json.offset);
+              break;
+            default:
+              break;  
+          }
+
+        }
+      }
+
+      play.onclick = function() {
+        runPlayer();
+      }
+
+      stop.onclick = function() {
+        stopPlayer();
+      }
+    </script>
+  </body>
+</html>
