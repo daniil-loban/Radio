@@ -12,11 +12,11 @@ requrements:
 4. run server:
 ```yarn start```
 
-then server will create in cache database
-1) record day (today)
-2) fill tracks
-3) generate test playlist from all tracks;
-4) fill by playlist current day
+then server will create in cache database:
+ - record day (today)
+ - fill tracks
+ - generate test playlist from all tracks;
+ - fill by playlist current day
 
 5. open client:
 ```index.html  (just open it in browser)```
