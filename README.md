@@ -7,10 +7,20 @@ requrements:
 2. install modules:
 ```yarn install```
 
-3. optional: add some audio files to /audio folder
+3. add some audio files to /audio folder
 
 4. run server:
 ```yarn start```
 
-5. open clint:
+then server will create in cache database
+1) record day (today)
+2) fill tracks
+3) generate test playlist from all tracks;
+4) fill by playlist current day
+
+5. open client:
 ```index.html  (just open it in browser)```
+
+6. click Play button
+
+7. wait some time...

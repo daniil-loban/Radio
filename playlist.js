@@ -2,16 +2,11 @@ const spawn = require('child_process').spawn;
 const glob = require('glob');
 
 const getDir = (path) => {
-  const getDirectories = function (src, callback) {
-    glob(src + '/**/*', callback);
-  };
+  const getDirectories = (src, callback) => glob(src + '/**/*', callback);
   return new Promise(resolve => {
     getDirectories(path, function (err, res) {
-      if (err) {
-        console.log('Error', err);
-      } else {
-        resolve(res)
-      }
+      if (err) console.log('Error', err);
+      else resolve(res)
     });
   })
 }
@@ -40,26 +35,7 @@ const getAudioDuration = async(filename) => {
   })
 }
 
-const generatePlaylist = () => {
-	let from = 0;
-	return new Promise((resolve) => {
-		getDir('./audio')
-		.then(async(files) => {
-			const mapFiles = files.map(async(file, index) => {
-				const duration = await getAudioDuration(file);
-				return ({
-					from,
-					to: from += duration,
-					file,
-					duration,
-				})
-			})
-			resolve(mapFiles)
-		})
-	})
-}
-
-const getChunk = (file, from, to) => {
+const getChunk = (file, from, to, bitrate='256k') => {
 	let hasError = false
 	const buffer = [];
 	const cmd = 'ffmpeg';
@@ -67,7 +43,7 @@ const getChunk = (file, from, to) => {
 	  '-i', file,
 	  '-f', 'ogg',
     //'-r', '44100', // -
-    //'-ar', '8k',  // +
+    //'-ar', '8k',  // + bitrate
 	  '-ss', from,
 	  '-to', to,
 	  'pipe:1'
@@ -101,39 +77,24 @@ const stripName = (file) => {
   return find[1];
 }
 
-const getChunkForClient = async(playlist, start, LENGTH) =>{
-  let end = start + LENGTH;
-  let first = playlist.find(e => e.from <= start && e.to > start)
-  if (!first) throw Error('No data');
-  
-  let ednOffset =  first.to < end ? first.to - end: 0; 
+const getChunkForClient = async(chunksInfo) => {
+  let files = [];
   let buffer = [];
-  let files = []
 
-  //console.log(first.file, start - first.from , (end - first.from) + ednOffset)
-  await getChunk(first.file, start - first.from , (end - first.from) + ednOffset)
-    .then(buff => {
-      files.push(stripName(first.file))
-      buffer.push(buff)
-    }  
-  )
-    
-  if (ednOffset < 0) {
-		let second = playlist.find(e => e.from <= end && e.to >= -ednOffset + end )
-    if (second) {
-      //console.log(second.file, 0 , -ednOffset)
-      await getChunk(second.file, 0 , -ednOffset)
-        .then(buff => {
-          files.push(stripName(second.file));
-          buffer.push(buff);
-        })
-    }
-  }
+  const chunked = chunksInfo.map(async(chunk,index) => {
+    await getChunk(chunk.file, chunk.start , chunk.end)
+      .then(buff => {
+        files[index]=stripName(chunk.file);
+        buffer[index]=buff;
+      })  
+  })
+  await Promise.all(chunked);  
 
-  return {buffer: new Buffer.concat(buffer), files, offset: ednOffset };
+  const endOffset = chunksInfo.length === 2 ? chunksInfo[1].to : 0;
+  return {buffer: new Buffer.concat(buffer), files, offset: endOffset };
 }
 
-// module.exports.getAudioDuration = getAudioDuration;
-// module.exports.getDir = getDir;
-module.exports.generatePlaylist = generatePlaylist;
+module.exports.getAudioDuration = getAudioDuration;
+module.exports.getDir = getDir;
+// module.exports.generatePlaylist = generatePlaylist;
 module.exports.getChunkForClient = getChunkForClient;

@@ -10,7 +10,7 @@
     <h1>Radio</h1>
     <h2 id="playNow">...</h2>
     <button class="play">Play</button>
-    <button class="stop">Stop</button>
+    <button class="stop" style="display: none;">Stop</button>
     <script>
       var ws = new WebSocket("ws://localhost:8081");
       ws.binaryType = 'arraybuffer';
@@ -44,7 +44,7 @@
       let currentPlay = time;
 
       const LENGTH = 10;
-      let startTime = 0;
+      let startTime = Date.now();
       let lastBuffTime = -1;
 
       let songLength = 0;
@@ -64,14 +64,14 @@
 
       const runPlayer = () => {
         status = 'PLAY';
-        ws.send(startTime);
+        ws.send(JSON.stringify({type: 'getChunk', time: startTime}));
         play.setAttribute('disabled', 'disabled');
         stop.removeAttribute('disabled');
       }
 
       const startGetInterval = () => {
         const timeoutId = setTimeout(() => {
-          ws.send(startTime);
+          ws.send(JSON.stringify({type: 'getChunk', time: startTime}));
         }
         ,1000 * (LENGTH * .7))
       } 
@@ -87,7 +87,7 @@
             currentSource.loop = false;
             currentPlay += songLength;
             currentSource.start(currentPlay)
-            startTime += LENGTH;
+            startTime += LENGTH * 1000;
             startGetInterval();  
           });
         } else if(typeof audioData === 'string') {
@@ -102,6 +102,10 @@
               playNow.textContent = json.files[0];
               //console.log(json.files, json.offset);
               break;
+            case 'query':
+              if (json.data === 'getLocalTime') {
+                ws.send(JSON.stringify({type:'sendLocalTime', time: Date.now()}));
+              }
             default:
               break;  
           }
