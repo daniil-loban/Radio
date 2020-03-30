@@ -15,11 +15,9 @@ app.set('views', path.join(__dirname, 'views'))
 
 app.get('/', (request, response) => {
 	response.render('home', {
-		test: JSON.stringify(webSocketServer, null, 2)
+		//test: JSON.stringify(webSocketServer, null, 2)
 	})
 })
-
-
 
 const {
 	initDB,
@@ -103,5 +101,4 @@ const initServer = async() => {
 }
 
 initServer();
-
 app.listen(8080)
