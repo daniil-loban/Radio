@@ -20,7 +20,12 @@ const getAudioDuration = async(filename) => {
 	];
   
   return new Promise((resolve) => {
-    const proc = spawn(cmd, args);
+    const proc = spawn(cmd, args, {
+      env: {
+          NODE_ENV: 'production',
+          PATH: process.env.PATH
+      }
+  });
     let timeSec = 0;
     proc.stdout.on('data', function(data) {
       const str = data.toString();
@@ -50,7 +55,12 @@ const getChunk = (file, from, to, bitrate='256k') => {
   ];
   
   return new Promise( resolve => {
-    const proc = spawn(cmd, args);
+    const proc = spawn(cmd, args,{
+      env: {
+          NODE_ENV: 'production',
+          PATH: process.env.PATH
+      }
+    });
     proc.stdout.on('data', function(data) {
       buffer.push(new Buffer.from(data));
     });
