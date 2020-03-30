@@ -1,3 +1,20 @@
 {
-
+  "0": {
+    "name": "testPlaylist",
+    "duration": 357.807891,
+    "tracks": [
+      {
+        "file": "./audio/Karunesh.mp3",
+        "duration": 297.06449,
+        "from": 0,
+        "to": 297.06449
+      },
+      {
+        "file": "./audio/ToyadaTutorial.aac",
+        "duration": 60.743401,
+        "from": 297.06449,
+        "to": 357.807891
+      }
+    ]
+  }
 }

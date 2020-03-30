@@ -1,3 +1,22 @@
+const path = require('path');
+const express = require('express');
+const exphbs = require('express-handlebars');
+const app = express();
+
+app.engine('.hbs', exphbs({
+    defaultLayout: 'main',
+    extname: '.hbs',
+    layoutsDir: path.join(__dirname, 'views/layouts')
+}))
+app.set('view engine', '.hbs')
+app.set('views', path.join(__dirname, 'views'))
+
+app.get('/', (request, response) => {
+	response.render('home', {
+			name: 'John'
+	})
+})
+
 const WebSocketServer = new require('ws');
 
 const {
@@ -49,7 +68,7 @@ const initServer = async() => {
 	const playlists  = await getListOfPlaylists();
 	await fillDayByPlaylists(today, playlists); 
 
-	let port = 8080;
+	let port = 8081;
 	webSocketServer = new WebSocketServer.Server({ port });
 	webSocketServer.binaryType = 'arraybuffer';
 	console.log(`Server start on port: ${port}`)
@@ -94,3 +113,6 @@ const initServer = async() => {
 }
 
 initServer();
+
+
+app.listen(8080)
