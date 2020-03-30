@@ -49,7 +49,7 @@ const initServer = async() => {
 	const playlists  = await getListOfPlaylists();
 	await fillDayByPlaylists(today, playlists); 
 
-	let port = 8081;
+	let port = 8080;
 	webSocketServer = new WebSocketServer.Server({ port });
 	webSocketServer.binaryType = 'arraybuffer';
 	console.log(`Server start on port: ${port}`)

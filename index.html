@@ -12,7 +12,7 @@
     <button class="play">Play</button>
     <button class="stop" style="display: none;">Stop</button>
     <script>
-      var ws = new WebSocket("ws://localhost:8081");
+      var ws = new WebSocket("ws://localhost:8080");
       ws.binaryType = 'arraybuffer';
 
       const play = document.querySelector('.play');
