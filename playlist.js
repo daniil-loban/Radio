@@ -67,7 +67,7 @@ const getChunk = (file, from, to, bitrate='256k') => {
   
     proc.on('close', function() {
       if (!hasError) {
-        var data = new Buffer.concat(buffer);
+        const data = new Buffer.concat(buffer);
         //console.log('BUFF - SIZE',data.length)
         resolve(data, {binary: true, mask: false})
       } else {

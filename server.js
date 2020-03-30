@@ -1,6 +1,8 @@
 const path = require('path');
 const express = require('express');
 const exphbs = require('express-handlebars');
+const WebSocketServer = new require('ws');
+
 const app = express();
 
 app.engine('.hbs', exphbs({
@@ -13,11 +15,11 @@ app.set('views', path.join(__dirname, 'views'))
 
 app.get('/', (request, response) => {
 	response.render('home', {
-			name: 'John'
+		test: JSON.stringify(webSocketServer, null, 2)
 	})
 })
 
-const WebSocketServer = new require('ws');
+
 
 const {
 	initDB,
@@ -32,23 +34,11 @@ const {
 	getChunksInfoByTime,
 } = require('./dbAPI');
 
-/*
-const {
-	LENGTH,
-} = require('./constants');
-
-
-
-// let playlist = [];
-*/
-
 const {
 	getDateDiffFromMidnight
 } = require('./utils');
 
 const { 
-	//getDir,
-	//getAudioDuration,
 	getChunkForClient
 } = require('./playlist');
 
@@ -113,6 +103,5 @@ const initServer = async() => {
 }
 
 initServer();
-
 
 app.listen(8080)
