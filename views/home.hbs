@@ -3,7 +3,11 @@
 <button class="play">Play</button>
 <button class="stop" style="display: none;">Stop</button>
 <script>
-  const ws = new WebSocket("ws://localhost:8081");
+  //const ws = new WebSocket("ws://localhost:8081");
+  const ws = new WebSocket(`${window.location}`
+    .replace(/^https?/, 'ws')
+    .replace(':8080/', '') + ':8081');
+
   ws.binaryType = 'arraybuffer';
 
   const play = document.querySelector('.play');
@@ -35,7 +39,7 @@
   let currentPlay = time;
 
   const LENGTH = 10;
-  let startTime = 0;//Date.now();
+  let startTime = Date.now();
   let lastBuffTime = -1;
 
   let songLength = 0;
@@ -69,7 +73,7 @@
 
   ws.onmessage = function(message){ 
     let {data: audioData} = message;
-    if (audioData instanceof ArrayBuffer && status !== 'STOP') {
+    if (audioData instanceof ArrayBuffer  && audioData.byteLength !==0 && status !== 'STOP') {
       audioCtx.decodeAudioData(audioData, function(buffer) {
         songLength = buffer.duration;
         currentSource = audioCtx.createBufferSource();
