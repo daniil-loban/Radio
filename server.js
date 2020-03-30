@@ -78,7 +78,9 @@ const initServer = async() => {
 				case 'getChunk': {
 					const {time} = json;
 					const dateInfo = await getDateInfo(today);
-					const chunksInfo = await getChunksInfoByTime(dateInfo, getDateDiffFromMidnight(new Date(+time)));
+					
+					//const chunksInfo = await getChunksInfoByTime(dateInfo, getDateDiffFromMidnight(new Date(+time)));
+					const chunksInfo = await getChunksInfoByTime(dateInfo, +time);
 					getChunkForClient(chunksInfo)
 					.then(({buffer, files, offset}) => {
 						ws.send(JSON.stringify({type:'info', files, offset }), {binary: false, mask: false}) 
