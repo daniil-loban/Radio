@@ -4,6 +4,7 @@
   "description": "",
   "main": "server.js",
   "scripts": {
+    "preinstall": "npx npm-force-resolutions",
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js"
   },
@@ -16,5 +17,8 @@
     "glob": "^7.1.6",
     "nanoid": "^3.0.1",
     "ws": "^7.2.3"
+  },
+  "resolutions": {
+    "minimist": "1.2.3"
   }
 }
