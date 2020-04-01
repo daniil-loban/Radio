@@ -15,7 +15,7 @@ app.set('views', path.join(__dirname, 'views'))
 
 app.get('/', (request, response) => {
 	response.render('home', {
-		//test: JSON.stringify(webSocketServer, null, 2)
+		// send some date
 	})
 })
 
@@ -79,7 +79,6 @@ const initServer = async() => {
 					const {time} = json;
 					const dateInfo = await getDateInfo(today);
 					const chunksInfo = await getChunksInfoByTime(dateInfo, getDateDiffFromMidnight(new Date(+time)));
-					//const chunksInfo = await getChunksInfoByTime(dateInfo, +time);
 					getChunkForClient(chunksInfo)
 					.then(({buffer, files, offset}) => {
 						ws.send(JSON.stringify({type:'info', files, offset }), {binary: false, mask: false}) 

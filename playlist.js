@@ -68,7 +68,6 @@ const getChunk = (file, from, to, bitrate='256k') => {
     proc.on('close', function() {
       if (!hasError) {
         const data = new Buffer.concat(buffer);
-        //console.log('BUFF - SIZE',data.length)
         resolve(data, {binary: true, mask: false})
       } else {
         //'NO DATA'
@@ -106,5 +105,4 @@ const getChunkForClient = async(chunksInfo) => {
 
 module.exports.getAudioDuration = getAudioDuration;
 module.exports.getDir = getDir;
-// module.exports.generatePlaylist = generatePlaylist;
 module.exports.getChunkForClient = getChunkForClient;

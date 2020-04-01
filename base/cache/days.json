@@ -26,5 +26,33 @@
     ],
     "repeats": 241,
     "needToFit": 168.29826900000626
+  },
+  "MoyWviIVpXQeeM85fvw0l": {
+    "date": "1.4.2020",
+    "timestamp": 1585688400000,
+    "playlists": [
+      {
+        "name": "testPlaylist",
+        "duration": 357.807891,
+        "tracks": [
+          {
+            "file": "./audio/Karunesh.mp3",
+            "duration": 297.06449,
+            "from": 0,
+            "to": 297.06449
+          },
+          {
+            "file": "./audio/ToyadaTutorial.aac",
+            "duration": 60.743401,
+            "from": 297.06449,
+            "to": 357.807891
+          }
+        ],
+        "from": 0,
+        "to": 357.807891
+      }
+    ],
+    "repeats": 241,
+    "needToFit": 168.29826900000626
   }
 }
