@@ -19,7 +19,7 @@ then server will create in cache database:
  - fill by playlist current day
 
 5. open client:
-```index.html  (just open it in browser)```
+```localhost:8080```
 
 6. click Play button
 
