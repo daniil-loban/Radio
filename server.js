@@ -85,6 +85,7 @@ const initServer = async() => {
 						ws.send(buffer, {binary: true, mask: false})
 					})
 					.catch((err) => {
+						console.log(err);
 						ws.send(JSON.stringify({type:'error', message:'NO DATA'}), {binary: false, mask: false})
 					});
 					break;

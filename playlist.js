@@ -87,10 +87,14 @@ const stripName = (file) => {
 }
 
 const getChunkForClient = async(chunksInfo) => {
+  
+  
   let files = [];
   let buffer = [];
 
-  const chunked = chunksInfo.map(async(chunk,index) => {
+  const {chunks} = chunksInfo
+
+  const chunked = chunks.map(async(chunk,index) => {
     await getChunk(chunk.file, chunk.start , chunk.end)
       .then(buff => {
         files[index]=stripName(chunk.file);
@@ -99,8 +103,8 @@ const getChunkForClient = async(chunksInfo) => {
   })
   await Promise.all(chunked);  
 
-  const endOffset = chunksInfo.length === 2 ? chunksInfo[1].to : 0;
-  return {buffer: new Buffer.concat(buffer), files, offset: endOffset };
+  const offset = chunks.length === 2 ? chunks[1].end - chunks[1].start : 0;
+  return {buffer: new Buffer.concat(buffer), files, offset };
 }
 
 module.exports.getAudioDuration = getAudioDuration;

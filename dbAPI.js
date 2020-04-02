@@ -191,7 +191,7 @@ const getChunksInfoByTime = (dateInfo, start) => {
 			if (chunks[1].start < 0 || chunks[1].end < 0) console.log('error time [2]', start, chunks[1])
 		}
 	}  
-	return chunks;
+	return {chunks};
 }
 
 module.exports.initDB = initDB;
