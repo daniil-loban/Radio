@@ -1,5 +1,9 @@
 <h1>Radio</h1>
 <h2 id="playNow">...</h2>
+<div>
+  <input type="range" id="volume" name="cowbell" 
+    min="-1" max="1" value="1" step=".1">
+</div>
 <button class="play">Play</button>
 <button class="stop" style="display: none;">Stop</button>
 <script>
@@ -13,6 +17,11 @@
   const play = document.querySelector('.play');
   const stop = document.querySelector('.stop');
   const playNow = document.querySelector('#playNow');
+  const volume = document.querySelector('#volume');
+
+  
+
+  
 
   let audioCtx = null;
 
@@ -21,6 +30,8 @@
   } else {
     audioCtx = new window.AudioContext();
   }
+
+
 
   function init() {
     try {
@@ -44,6 +55,22 @@
 
   let songLength = 0;
   let currentSource = null;
+
+
+  const gainNode = audioCtx.createGain();
+  gainNode.gain.value = volume.value; 
+  gainNode.connect(audioCtx.destination);
+
+  const changeVolume = (event) => {
+    if  (currentSource) {
+      //gainNode.gain.value = event.target.value
+      gainNode.gain.setValueAtTime(event.target.value, audioCtx.currentTime) 
+      //currentSource.connect(gainNode);
+      console.log(gainNode.gain.value)
+    }
+  }
+
+  volume.addEventListener('change', changeVolume, false);
 
   let status = 'STOP'
   
@@ -73,6 +100,8 @@
 
   ws.onmessage = function(message){ 
     let {data: audioData} = message;
+    console.log(audioData);
+    console.log('--');
     if (audioData instanceof ArrayBuffer  && audioData.byteLength !==0 && status !== 'STOP') {
       audioCtx.decodeAudioData(audioData, function(buffer) {
         songLength = buffer.duration;
@@ -80,6 +109,7 @@
         currentSource.buffer = buffer;
         currentSource.connect(audioCtx.destination);
         currentSource.loop = false;
+        currentSource.connect(gainNode);
         currentPlay += songLength;
         currentSource.start(currentPlay)
         startTime += LENGTH * 1000;
